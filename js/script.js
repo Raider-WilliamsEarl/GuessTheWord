@@ -1,5 +1,5 @@
 //unordered list for guessed letters
-const guessedLetters = document.querySelector(".guessed-letters");
+const guessedLettersElement = document.querySelector(".guessed-letters");
 //button for "Guess!"
 const guessButton = document.querySelector(".guess");
 //text input for guessed letters
@@ -9,7 +9,7 @@ const progress = document.querySelector(".word-in-progress");
 //empty paragraph where remaining guesses will display
 const guessesLeft = document.querySelector(".remaining");
 //span inside empty paragraph where remaining guesses will display
-const guessesLeftSpan = document.querySelector (".remaining span");
+const guessesLeftSpan = document.querySelector(".remaining span");
 //empty paragraph where messages after letter is guessed will display
 const message = document.querySelector(".message");
 //hidden play again button
@@ -17,8 +17,9 @@ const playAgainButton = document.querySelector(".play-again");
 
 //test word -- comment out later --
 const word = "magnolia";
+const guessedLetters = [];
 
-const placeholder = function(word) {
+const placeholder = function (word) {
     const placeholderLetters = [];
     for (const letter of word) {
         console.log(letter);
@@ -30,8 +31,46 @@ const placeholder = function(word) {
 placeholder(word);
 
 guessButton.addEventListener("click", function (e) {
-  e.preventDefault();
-  const guess = letterInput.value;
-  console.log(guess);
-  letterInput.value = "";
+    e.preventDefault();
+    //placeholder for message
+    message.innerText = "";
+    // grab entered input
+    const guess = letterInput.value;
+    // validate the guess
+    const goodGuess = validateInput(guess);
+
+    if (goodGuess) {
+        makeGuess(guess);
+    }
+    letterInput.value = "";
 });
+
+const validateInput = function (input) {
+    const acceptedLetter = /[a-zA-Z]/;
+    //no letter entered
+    if (input.length === 0) {
+        message.innerText = "Please enter a letter";
+    }
+    //more than one letter entered
+    else if (input.length > 1) {
+        message.innerText = "You can only guess 1 letter at a time.";
+    }
+    //number or special character entered
+    else if (!input.match(acceptedLetter)) {
+        message.innerText = "Please enter a letter from A-Z.";
+    }
+    //letter entered
+    else {
+        return input;
+    }
+};
+
+const makeGuess = function (guess) {
+    guess = guess.toUpperCase();
+    if (guessedLetters.includes(guess)) {
+        message.innerText = "You already guessed that letter, try one you haven't gussed.";
+    } else {
+        guessedLetters.push(guess);
+        console.log(guessedLetters);
+    }
+}
