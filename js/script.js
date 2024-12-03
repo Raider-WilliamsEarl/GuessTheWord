@@ -16,8 +16,23 @@ const message = document.querySelector(".message");
 const playAgainButton = document.querySelector(".play-again");
 
 //test word -- comment out later --
-const word = "magnolia";
+let word = "magnolia";
 const guessedLetters = [];
+let remainingGuesses = 8;
+
+const getWord = async function () {
+    const res = await fetch (
+        "https://gist.githubusercontent.com/skillcrush-curriculum/7061f1d4d3d5bfe47efbfbcfe42bf57e/raw/5ffc447694486e7dea686f34a6c085ae371b43fe/words.txt"
+    );
+    const words = await res.text();
+    const wordArray = words.split("\n");
+    randomIndex = Math.floor(Math.random() * wordArray.length);
+    word = wordArray[randomIndex].trim();
+    placeholder(word)
+};
+
+// Start your engines (and the game)
+getWord();
 
 // Display symbols as placeholders for chosen word's letters
 const placeholder = function (word) {
@@ -72,6 +87,7 @@ const makeGuess = function (guess) {
         guessedLetters.push(guess);
         console.log(guessedLetters);
         playerGuesses();
+        guessCount(guess);
         wordInProgressUpdate(guessedLetters);
     }
 }
@@ -101,9 +117,29 @@ const wordInProgressUpdate = function (guessedLetters) {
     checkWin();
 }
 
+// update the guess count
+const guessCount = function (guess) {
+    const upperWord = word.toUpperCase();
+    if (!upperWord.includes(guess)) {
+        message.innerText = `${guess} is not included in the word, sorry.  Try again.`;
+        remainingGuesses -= 1;
+    } else {
+        message.innerText = `${guess} is in the word!  Good job!`
+    }
+
+    if (remainingGuesses === 0) {
+        message.innerHTML = `You have no more guesses left.  That's game over.  The word was <span class="highlight">${word}</span>.`;
+    } if (remainingGuesses === 1) {
+        guessesLeftSpan.innerText = `${remainingGuesses} guess`;
+    } else {
+        guessesLeftSpan.innerText = `${remainingGuesses} guesses`;
+    }
+}
+
 const checkWin = function() {
     if (word.toUpperCase() === progress.innerText) {
         message.classList.add("win");
         message.innerHTML = `<p class="highlight">You guessed correct the word! Congrats!</p>`;
+        remainingGuesses - 1;
     }
 }
