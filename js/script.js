@@ -19,6 +19,7 @@ const playAgainButton = document.querySelector(".play-again");
 const word = "magnolia";
 const guessedLetters = [];
 
+// Display symbols as placeholders for chosen word's letters
 const placeholder = function (word) {
     const placeholderLetters = [];
     for (const letter of word) {
@@ -26,7 +27,7 @@ const placeholder = function (word) {
         placeholderLetters.push("●");
     }
     progress.innerText = placeholderLetters.join("");
-}
+};
 
 placeholder(word);
 
@@ -40,6 +41,7 @@ guessButton.addEventListener("click", function (e) {
     const goodGuess = validateInput(guess);
 
     if (goodGuess) {
+        // It's a letter!  Make your guess!
         makeGuess(guess);
     }
     letterInput.value = "";
@@ -47,20 +49,17 @@ guessButton.addEventListener("click", function (e) {
 
 const validateInput = function (input) {
     const acceptedLetter = /[a-zA-Z]/;
-    //no letter entered
     if (input.length === 0) {
-        message.innerText = "Please enter a letter";
-    }
-    //more than one letter entered
-    else if (input.length > 1) {
+        //no letter entered
+        message.innerText = "Please enter a letter.";
+    } else if (input.length > 1) {
+        //more than one letter entered
         message.innerText = "You can only guess 1 letter at a time.";
-    }
-    //number or special character entered
-    else if (!input.match(acceptedLetter)) {
+    } else if (!input.match(acceptedLetter)) {
+        //number or special character or non-letter entered?
         message.innerText = "Please enter a letter from A-Z.";
-    }
-    //letter entered
-    else {
+    } else {
+        //single letter entered
         return input;
     }
 };
@@ -73,7 +72,7 @@ const makeGuess = function (guess) {
         guessedLetters.push(guess);
         console.log(guessedLetters);
         playerGuesses();
-        wordInProgressUpdate(guessedLetters)
+        wordInProgressUpdate(guessedLetters);
     }
 }
 
@@ -98,12 +97,12 @@ const wordInProgressUpdate = function (guessedLetters) {
         revealWord.push("●");
         }
     }
-    wordInProgressUpdate.innerText = revealWord.join("");
+    progress.innerText = revealWord.join("");
     checkWin();
 }
 
 const checkWin = function() {
-    if (word.toUpperCase() === wordInProgressUpdate.innerText) {
+    if (word.toUpperCase() === progress.innerText) {
         message.classList.add("win");
         message.innerHTML = `<p class="highlight">You guessed correct the word! Congrats!</p>`;
     }
