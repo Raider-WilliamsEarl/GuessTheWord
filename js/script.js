@@ -72,5 +72,39 @@ const makeGuess = function (guess) {
     } else {
         guessedLetters.push(guess);
         console.log(guessedLetters);
+        playerGuesses();
+        wordInProgressUpdate(guessedLetters)
+    }
+}
+
+const playerGuesses = function () {
+    //clear list first
+    guessedLettersElement.innerHTML = "";
+    for (const letter of guessedLetters) {
+        const li = document.createElement("li");
+        li.innerText = letter;
+        guessedLettersElement.append(li);
+    }
+}
+
+const wordInProgressUpdate = function (guessedLetters) {
+    const wordUpper = word.toUpperCase();
+    const wordArray = wordUpper.split("");
+    const revealWord = [];
+    for (const letter of wordArray) {
+        if (guessedLetters.includes(letter)) {
+            revealWord.push(letter.toUpperCase());
+        } else {
+        revealWord.push("●");
+        }
+    }
+    wordInProgressUpdate.innerText = revealWord.join("");
+    checkWin();
+}
+
+const checkWin = function() {
+    if (word.toUpperCase() === wordInProgressUpdate.innerText) {
+        message.classList.add("win");
+        message.innerHTML = `<p class="highlight">You guessed correct the word! Congrats!</p>`;
     }
 }
